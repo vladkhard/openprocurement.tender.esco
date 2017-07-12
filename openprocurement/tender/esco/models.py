@@ -81,8 +81,8 @@ class IESCOTender(IAboveThresholdEUTender):
 class Lot(BaseLot):
     class Options:
         roles = {
-            'create': whitelist('id', 'title', 'title_en', 'title_ru', 'description', 'description_en', 'description_ru', 'minValue', 'guarantee', 'minimalStep'),
-            'edit': whitelist('title', 'title_en', 'title_ru', 'description', 'description_en', 'description_ru', 'minValue', 'guarantee', 'minimalStep'),
+            'create': whitelist('id', 'title', 'title_en', 'title_ru', 'description', 'description_en', 'description_ru', 'guarantee', 'minimalStep'),
+            'edit': whitelist('title', 'title_en', 'title_ru', 'description', 'description_en', 'description_ru', 'guarantee', 'minimalStep'),
             'embedded': embedded_lot_role,
             'view': default_lot_role,
             'default': default_lot_role,
@@ -92,7 +92,6 @@ class Lot(BaseLot):
             'chronograph_view': whitelist('id', 'auctionPeriod', 'numberOfBids', 'status'),
         }
 
-    minValue = ModelType(Value, required=True)
     minimalStep = ModelType(Value, required=True)
     auctionPeriod = ModelType(LotAuctionPeriod, default={})
     auctionUrl = URLType()
@@ -119,17 +118,6 @@ class Lot(BaseLot):
         return Value(dict(amount=self.minimalStep.amount,
                           currency=self.__parent__.minimalStep.currency,
                           valueAddedTaxIncluded=self.__parent__.minimalStep.valueAddedTaxIncluded))
-
-    @serializable(serialized_name="minValue", type=ModelType(Value))
-    def lot_minValue(self):
-        return Value(dict(amount=self.minValue.amount,
-                          currency=self.__parent__.minValue.currency,
-                          valueAddedTaxIncluded=self.__parent__.minValue.valueAddedTaxIncluded))
-
-    def validate_minimalStep(self, data, value):
-        if value and value.amount and data.get('minValue'):
-            if data.get('minValue').amount < value.amount:
-                raise ValidationError(u"value should be less than minValue of lot")
 
 
 class ESCOValue(Value):
@@ -166,12 +154,6 @@ class LotValue(BaseLotValue):
             lot = lots[0]
             tender = lot['__parent__']
             amount = calculate_npv(tender.NBUdiscountRate, value.annualCostsReduction, value.yearlyPayments, value.contractDuration)  #XXX: Calculating value.amount manually
-            if lot.minValue.amount > amount:
-                raise ValidationError(u"value of bid should be greater than minValue of lot")
-            if lot.get('minValue').currency != value.currency:
-                raise ValidationError(u"currency of bid should be identical to currency of minValue of lot")
-            if lot.get('minValue').valueAddedTaxIncluded != value.valueAddedTaxIncluded:
-                raise ValidationError(u"valueAddedTaxIncluded of bid should be identical to valueAddedTaxIncluded of minValue of lot")
 
 
 class Contract(BaseEUContract):
@@ -203,12 +185,6 @@ class Bid(BaseEUBid):
                 if not value:
                     raise ValidationError(u'This field is required.')
                 amount = calculate_npv(tender.NBUdiscountRate, value.annualCostsReduction, value.yearlyPayments, value.contractDuration)  #XXX: Calculating value.amount manually
-                if tender.minValue.amount > amount:
-                    raise ValidationError(u'value of bid should be greater than minValue of tender')
-                if tender.get('minValue').currency != value.currency:
-                    raise ValidationError(u"currency of bid should be identical to currency of minValue of tender")
-                if tender.get('minValue').valueAddedTaxIncluded != value.valueAddedTaxIncluded:
-                    raise ValidationError(u"valueAddedTaxIncluded of bid should be identical to valueAddedTaxIncluded of minValue of tender")
 
 
 @implementer(IESCOTender)
@@ -255,7 +231,6 @@ class Tender(BaseTender):
     title_en = StringType(required=True, min_length=1)
 
     items = ListType(ModelType(Item), required=True, min_size=1, validators=[validate_cpv_group, validate_items_uniq])  # The goods and services to be purchased, broken into line items wherever possible. Items should not be duplicated, but a quantity of 2 specified instead.
-    minValue = ModelType(Value, required=True)  # The total estimated value of the procurement.
     enquiryPeriod = ModelType(EnquiryPeriod, required=False)
     tenderPeriod = ModelType(PeriodStartEndRequired, required=True)
     auctionPeriod = ModelType(TenderAuctionPeriod, default={})
@@ -405,12 +380,6 @@ class Tender(BaseTender):
         """A property that is serialized by schematics exports."""
         return len([bid for bid in self.bids if bid.status in ("active", "pending",)])
 
-    @serializable(serialized_name="minValue", type=ModelType(Value))
-    def tender_minValue(self):
-        return Value(dict(amount=sum([i.minValue.amount for i in self.lots]),
-                          currency=self.minValue.currency,
-                          valueAddedTaxIncluded=self.minValue.valueAddedTaxIncluded)) if self.lots else self.minValue
-
     @serializable(serialized_name="guarantee", serialize_when_none=False, type=ModelType(Guarantee))
     def tender_guarantee(self):
         if self.lots:
@@ -455,15 +424,6 @@ class Tender(BaseTender):
     def validate_auctionUrl(self, data, url):
         if url and data['lots']:
             raise ValidationError(u"url should be posted for each lot")
-
-    def validate_minimalStep(self, data, value):
-        if value and value.amount and data.get('minValue'):
-            if data.get('minValue').amount < value.amount:
-                raise ValidationError(u"value should be less than minValue of tender")
-            if data.get('minValue').currency != value.currency:
-                raise ValidationError(u"currency should be identical to currency of minValue of tender")
-            if data.get('minValue').valueAddedTaxIncluded != value.valueAddedTaxIncluded:
-                raise ValidationError(u"valueAddedTaxIncluded should be identical to valueAddedTaxIncluded of minValue of tender")
 
     def validate_tenderPeriod(self, data, period):
         # if data['_rev'] is None when tender was created just now
