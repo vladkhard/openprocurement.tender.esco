@@ -40,12 +40,8 @@ from openprocurement.tender.esco.tests.base import (
 
 from openprocurement.tender.esco.tests.lot_blanks import (
     create_tender_lot_invalid,
-    patch_tender_lot_minValue,
-    patch_tender_currency,
-    patch_tender_vat,
     get_tender_lot,
     get_tender_lots,
-    tender_min_value,
     # TenderLotFeatureBidderResourceTest
     create_tender_feature_bid_invalid,
     create_tender_feature_bid,
@@ -64,11 +60,8 @@ class TenderLotResourceTest(BaseESCOEUContentWebTest):
     test_create_tender_lot_invalid = snitch(create_tender_lot_invalid)
     test_create_tender_lot = snitch(create_tender_lot)
     test_patch_tender_lot = snitch(patch_tender_lot)
-    test_patch_tender_lot_minValue = snitch(patch_tender_lot_minValue)
     test_delete_tender_lot = snitch(delete_tender_lot)
 
-    test_patch_tender_currency = snitch(patch_tender_currency)
-    test_patch_tender_vat = snitch(patch_tender_vat)
     test_tender_lot_guarantee = snitch(tender_lot_guarantee)
 
     test_get_tender_lot = snitch(get_tender_lot)
@@ -91,7 +84,6 @@ class TenderLotFeatureResourceTest(BaseESCOEUContentWebTest):
     max_feature_value = 0.3
     sum_of_max_value_of_all_features = 0.3
 
-    test_tender_min_value = snitch(tender_min_value)
     test_tender_features_invalid = snitch(tender_features_invalid)
     test_tender_lot_document = snitch(tender_lot_document)
 
