@@ -245,14 +245,14 @@ def create_tender_invalid(self):
     ])
 
     data = self.initial_data['minimalStep']
-    self.initial_data['minimalStep'] = 1.1
+    self.initial_data['minimalStep'] = {'amount': '100.0', 'currency': "USD"}
     response = self.app.post_json(request_path, {'data': self.initial_data}, status=422)
     self.initial_data['minimalStep'] = data
     self.assertEqual(response.status, '422 Unprocessable Entity')
     self.assertEqual(response.content_type, 'application/json')
     self.assertEqual(response.json['status'], 'error')
     self.assertEqual(response.json['errors'], [
-        {u'description': [u'Float value should be less than 1.'], u'location': u'body', u'name': u'minimalStep'}
+        {u'description': [u"Value '{u'currency': u'USD', u'amount': u'100.0'}' is not float."], u'location': u'body', u'name': u'minimalStep'}
     ])
 
     data = self.initial_data["items"][0].pop("additionalClassifications")
