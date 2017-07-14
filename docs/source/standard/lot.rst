@@ -35,13 +35,13 @@ Schema
     Bid guarantee
 
 :minimalStep:
-   :ref:`value`, required
+   float, required
 
-   The minimal step of auction (reduction). Validation rules:
+   The minimal step of auction (raising). Validation:
 
-   * `amount` should be less then `Lot.minValue.amount`
-   * `currency` should either be absent or match `Lot.minValue.currency`
-   * `valueAddedTaxIncluded` should either be absent or match `Lot.minValue.valueAddedTaxIncluded`
+   * minimal value for minimal step is 0 (0%)
+   * maximum value for miminal step is 1 (100%)
+
 
 :auctionPeriod:
    :ref:`period`, read-only

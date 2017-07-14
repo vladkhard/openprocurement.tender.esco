@@ -102,13 +102,12 @@ Schema
    A list of all the companies who entered submissions for the tender.
 
 :minimalStep:
-   :ref:`value`, required
+   float, required
 
-   The minimal step of auction (reduction). Validation rules:
+   The minimal step of auction (raising). Validation rules:
 
-   * `amount` should be less then `Tender.minValue.amount`
-   * `currency` should either be absent or match `Tender.minValue.currency`
-   * `valueAddedTaxIncluded` should either be absent or match `Tender.minValue.valueAddedTaxIncluded`
+   * minimal value for minimal step is 0 (0%)
+   * maximum value for miminal step is 1 (100%)
 
 :awards:
     List of :ref:`award` objects
