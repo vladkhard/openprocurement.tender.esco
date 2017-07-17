@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
+from nose_todo_plugin import warning
 from openprocurement.tender.openeu.constants import TENDERING_DAYS
 from openprocurement.tender.esco.tests.base import (
     test_tender_data, test_lots, test_bids,
@@ -41,6 +42,9 @@ from openprocurement.tender.esco.tests.tender_blanks import (
     create_tender_generated,
 )
 
+
+lost_contract_for_active_award = warning(reason="ESCO Contract signing not implemented")(lost_contract_for_active_award)
+multiple_bidders_tender = warning(reason="ESCO Contract signing not implemented")(multiple_bidders_tender)
 
 class TenderESCOEUTest(BaseESCOWebTest):
     initial_auth = ('Basic', ('broker', ''))

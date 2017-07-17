@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
-
+from nose_todo_plugin import warning
 
 # TenderBidResourceTest
 
@@ -328,7 +328,7 @@ def patch_tender_bid(self):
     self.assertEqual(response.content_type, 'application/json')
     self.assertEqual(response.json['errors'][0]["description"], "Can't update bid in current (complete) tender status")
 
-
+@warning("ESCO Contract signing not implemented")
 def delete_tender_bidder(self):
     response = self.app.post_json('/tenders/{}/bids'.format(
         self.tender_id), {'data': {'selfEligible': True, 'selfQualified': True,

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
+from nose_todo_plugin import warning
 from copy import deepcopy
 
 from openprocurement.api.tests.base import snitch
@@ -31,6 +32,8 @@ from openprocurement.tender.esco.tests.contract_blanks import (
     patch_tender_contract
 )
 
+
+patch_tender_contract_datesigned = warning(reason='ESCO Contract signing not implemented')(patch_tender_contract_datesigned)
 
 class TenderContractResourceTest(BaseESCOEUContentWebTest, TenderContractResourceTestMixin):
     initial_status = 'active.qualification'

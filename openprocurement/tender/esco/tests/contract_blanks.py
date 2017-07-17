@@ -2,10 +2,11 @@
 from datetime import timedelta
 
 from openprocurement.api.utils import get_now
+from nose_todo_plugin import warning
 
 # TenderContractResourceTest
 
-
+@warning("ESCO Contract signing not implemented")
 def patch_tender_contract(self):
     response = self.app.get('/tenders/{}/contracts'.format(self.tender_id))
     contract = response.json['data'][0]
@@ -56,7 +57,6 @@ def patch_tender_contract(self):
     self.assertEqual(response.status, '200 OK')
     #  XXX: Useless check, because contract.value.amount should be strictly equal to award.amount.value and patch request will not return any data
     # self.assertEqual(response.json['data']['value']['amount'], 698.444)
-
     response = self.app.patch_json('/tenders/{}/contracts/{}'.format(self.tender_id, contract['id']),
                                    {"data": {"status": "active"}}, status=403)
     self.assertEqual(response.status, '403 Forbidden')
