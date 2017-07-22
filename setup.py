@@ -11,6 +11,7 @@ requires = [
 
 test_requires = requires + [
     'webtest',
+    'noseplugins',
     'python-coveralls',
 ]
 

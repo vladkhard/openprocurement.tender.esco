@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
+from nose_todo_plugin import warning
 
 from openprocurement.tender.esco.tests.base import (
     test_bids, test_features_tender_data,
@@ -22,6 +23,10 @@ from openprocurement.tender.openeu.tests.bid_blanks import (
     put_tender_bidder_document_private_json,
     get_tender_bidder_document_ds,
     # TenderBidDocumentResourceTest
+    get_tender_bidder_document,
+    create_tender_bidder_document,
+    put_tender_bidder_document,
+    patch_tender_bidder_document,
     create_tender_bidder_document_nopending,
     patch_tender_bidder_document_private,
     # TenderBidBatchDocumentWithDSResourceTest
@@ -54,6 +59,13 @@ from openprocurement.tender.esco.tests.bid_blanks import (
     deleted_bid_do_not_locks_tender_in_state,
 )
 
+
+get_tender_bidder = warning(reason='ESCO Contract signing not implemented')(get_tender_bidder)
+get_tender_bidder_document = warning(reason='ESCO Contract signing not implemented')(get_tender_bidder_document)
+create_tender_bidder_document = warning(reason='ESCO Contract signing not implemented')(create_tender_bidder_document)
+put_tender_bidder_document = warning(reason='ESCO Contract signing not implemented')(put_tender_bidder_document)
+patch_tender_bidder_document = warning(reason='ESCO Contract signing not implemented')(patch_tender_bidder_document)
+get_tender_bidder_document_ds = warning(reason='ESCO Contract signing not implemented')(get_tender_bidder_document_ds)
 
 class TenderBidResourceTest(BaseESCOEUContentWebTest):
     initial_status = 'active.tendering'
@@ -104,6 +116,10 @@ class TenderBidDocumentResourceTest(BaseESCOEUContentWebTest, TenderBidDocumentR
         self.bid2_id = bid2['id']
         self.bid2_token = response.json['access']['token']
 
+    test_get_tender_bidder_document = snitch(get_tender_bidder_document)
+    test_create_tender_bidder_document = snitch(create_tender_bidder_document)
+    test_put_tender_bidder_document = snitch(put_tender_bidder_document)
+    test_patch_tender_bidder_document = snitch(patch_tender_bidder_document)
     test_patch_and_put_document_into_invalid_bid = snitch(patch_and_put_document_into_invalid_bid)
     test_create_tender_bidder_document_nopending = snitch(create_tender_bidder_document_nopending)
 

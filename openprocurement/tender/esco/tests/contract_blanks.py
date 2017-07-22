@@ -2,10 +2,11 @@
 from datetime import timedelta
 
 from openprocurement.api.utils import get_now
+from nose_todo_plugin import warning
 
 # TenderContractResourceTest
 
-
+@warning("ESCO Contract signing not implemented")
 def patch_tender_contract(self):
     response = self.app.get('/tenders/{}/contracts'.format(self.tender_id))
     contract = response.json['data'][0]

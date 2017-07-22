@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
+from nose_todo_plugin import warning
 
 from openprocurement.api.tests.base import snitch
 
@@ -52,6 +53,13 @@ from openprocurement.tender.esco.tests.lot_blanks import (
     patch_tender_bid,
 )
 
+
+one_lot_1bid = warning(reason="ESCO Contract signing not implemented")(one_lot_1bid)
+one_lot_2bid = warning(reason="ESCO Contract signing not implemented")(one_lot_2bid)
+one_lot_3bid_1del = warning(reason="ESCO Contract signing not implemented")(one_lot_3bid_1del)
+one_lot_3bid_1un = warning(reason="ESCO Contract signing not implemented")(one_lot_3bid_1un)
+two_lot_2bid_2com_2win = warning(reason="ESCO Contract signing not implemented")(two_lot_2bid_2com_2win)
+two_lot_3bid_1win_bug = warning(reason="ESCO Contract signing not implemented")(two_lot_3bid_1win_bug)
 
 class TenderLotResourceTest(BaseESCOEUContentWebTest):
 
