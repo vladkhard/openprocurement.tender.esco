@@ -93,7 +93,7 @@ class Lot(BaseLot):
         }
 
     minValue = ModelType(Value, required=False, default={'amount': 0, 'currency': 'UAH', 'valueAddedTaxIncluded': True})
-    minimalStep = ModelType(Value, required=True)
+    minimalStep = FloatType(required=True, min_value=0, max_value=1)
     auctionPeriod = ModelType(LotAuctionPeriod, default={})
     auctionUrl = URLType()
     guarantee = ModelType(Guarantee)
@@ -113,12 +113,6 @@ class Lot(BaseLot):
         if self.guarantee:
             currency = self.__parent__.guarantee.currency if self.__parent__.guarantee else self.guarantee.currency
             return Guarantee(dict(amount=self.guarantee.amount, currency=currency))
-
-    @serializable(serialized_name="minimalStep", type=ModelType(Value))
-    def lot_minimalStep(self):
-        return Value(dict(amount=self.minimalStep.amount,
-                          currency=self.__parent__.minimalStep.currency,
-                          valueAddedTaxIncluded=self.__parent__.minimalStep.valueAddedTaxIncluded))
 
     @serializable(serialized_name="minValue", type=ModelType(Value))
     def lot_minValue(self):
@@ -262,7 +256,7 @@ class Tender(BaseTender):
     procuringEntity = ModelType(ProcuringEntity, required=True)  # The entity managing the procurement, which may be different from the buyer who is paying / using the items being procured.
     awards = ListType(ModelType(Award), default=list())
     contracts = ListType(ModelType(Contract), default=list())
-    minimalStep = ModelType(Value, required=True)
+    minimalStep = FloatType(required=True, min_value=0, max_value=1)
     questions = ListType(ModelType(Question), default=list())
     complaints = ListType(ComplaintModelType(Complaint), default=list())
     auctionUrl = URLType()
@@ -423,11 +417,9 @@ class Tender(BaseTender):
         else:
             return self.guarantee
 
-    @serializable(serialized_name="minimalStep", type=ModelType(Value))
+    @serializable(serialized_name="minimalStep")
     def tender_minimalStep(self):
-        return Value(dict(amount=min([i.minimalStep.amount for i in self.lots]),
-                          currency=self.minimalStep.currency,
-                          valueAddedTaxIncluded=self.minimalStep.valueAddedTaxIncluded)) if self.lots else self.minimalStep
+        return min([i.minimalStep for i in self.lots]) if self.lots else self.minimalStep
 
     def validate_items(self, data, items):
         cpv_336_group = items[0].classification.id[:3] == '336' if items else False
@@ -452,13 +444,6 @@ class Tender(BaseTender):
     def validate_auctionUrl(self, data, url):
         if url and data['lots']:
             raise ValidationError(u"url should be posted for each lot")
-
-    def validate_minimalStep(self, data, value):
-        if value and value.amount and data.get('minValue'):
-            if data.get('minValue').currency != value.currency:
-                raise ValidationError(u"currency should be identical to currency of minValue of tender")
-            if data.get('minValue').valueAddedTaxIncluded != value.valueAddedTaxIncluded:
-                raise ValidationError(u"valueAddedTaxIncluded should be identical to valueAddedTaxIncluded of minValue of tender")
 
     def validate_tenderPeriod(self, data, period):
         # if data['_rev'] is None when tender was created just now

@@ -233,26 +233,15 @@ def create_tender_invalid(self):
         {u'description': [u'period should begin after auctionPeriod'], u'location': u'body', u'name': u'awardPeriod'}
     ])
 
-    # data = self.initial_data['minimalStep']
-    # self.initial_data['minimalStep'] = {'amount': '1000.0'}
-    # response = self.app.post_json(request_path, {'data': self.initial_data}, status=422)
-    # self.initial_data['minimalStep'] = data
-    # self.assertEqual(response.status, '422 Unprocessable Entity')
-    # self.assertEqual(response.content_type, 'application/json')
-    # self.assertEqual(response.json['status'], 'error')
-    # self.assertEqual(response.json['errors'], [
-    #     {u'description': [u'value should be less than minValue of tender'], u'location': u'body', u'name': u'minimalStep'}
-    # ])
-
     data = self.initial_data['minimalStep']
-    self.initial_data['minimalStep'] = {'amount': '100.0', 'valueAddedTaxIncluded': False}
+    self.initial_data['minimalStep'] = -0.10
     response = self.app.post_json(request_path, {'data': self.initial_data}, status=422)
     self.initial_data['minimalStep'] = data
     self.assertEqual(response.status, '422 Unprocessable Entity')
     self.assertEqual(response.content_type, 'application/json')
     self.assertEqual(response.json['status'], 'error')
     self.assertEqual(response.json['errors'], [
-        {u'description': [u'valueAddedTaxIncluded should be identical to valueAddedTaxIncluded of minValue of tender'], u'location': u'body', u'name': u'minimalStep'}
+        {u'description': [u'Float value should be greater than 0.'], u'location': u'body', u'name': u'minimalStep'}
     ])
 
     data = self.initial_data['minimalStep']
@@ -263,7 +252,7 @@ def create_tender_invalid(self):
     self.assertEqual(response.content_type, 'application/json')
     self.assertEqual(response.json['status'], 'error')
     self.assertEqual(response.json['errors'], [
-        {u'description': [u'currency should be identical to currency of minValue of tender'], u'location': u'body', u'name': u'minimalStep'}
+        {u'description': [u"Value '{u'currency': u'USD', u'amount': u'100.0'}' is not float."], u'location': u'body', u'name': u'minimalStep'}
     ])
 
     data = self.initial_data["items"][0].pop("additionalClassifications")
