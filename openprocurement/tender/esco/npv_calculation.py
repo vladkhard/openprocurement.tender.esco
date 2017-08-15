@@ -22,8 +22,8 @@ def calculate_discount_rate(
 
 
 def calculate_discount_rates(
-        nbu_discount_rate,
         days_for_discount_rates,
+        nbu_discount_rate,
         days_per_year=DAYS_PER_YEAR):
     '''Calculate discount rates from days_for_discount_rates list'''
 

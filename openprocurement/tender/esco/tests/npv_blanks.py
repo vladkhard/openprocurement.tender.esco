@@ -3,6 +3,7 @@ from openprocurement.tender.esco.constants import DAYS_PER_YEAR
 from openprocurement.tender.esco.npv_calculation import (
     calculate_contract_duration,
     calculate_discount_rate,
+    calculate_discount_rates,
 )
 
 
@@ -42,7 +43,6 @@ def contract_duration(self):
 
 
 def discount_rate(self):
-    days_per_year = 365
 
     # Predefined value
     nbu_rate = 12.5
@@ -53,12 +53,41 @@ def discount_rate(self):
     )
 
     # Divide 100% by n parts and check if nbu_rate is the same as
-    # nbu_rate * days_per_year / days_per_year
+    # nbu_rate * DAYS_PER_YEAR / DAYS_PER_YEAR
     n = 97
     for i in range(n + 1):
         nbu_rate = (i / float(n)) * 100
-        days = days_per_year
+        days = DAYS_PER_YEAR
         self.assertEqual(
-            calculate_discount_rate(nbu_rate, days, days_per_year),
+            calculate_discount_rate(nbu_rate, days, DAYS_PER_YEAR),
             nbu_rate,
         )
+
+
+def discount_rates(self):
+
+    periods = 21
+
+    # All days for discount rate are zeros
+    empty = [0] * periods
+    empty_rates = calculate_discount_rates(empty, nbu_rate)
+    self.assertEqual(len(empty), len(empty_rates))
+    for rate in empty_rates:
+        self.assertEqual(rate, 0)
+
+    # All days for discount rate are equal to DAYS_PER_YEAR
+    days = [DAYS_PER_YEAR] * periods
+    calculated_rates = calculate_discount_rates(days, nbu_rate)
+    self.assertEqual(len(days), len(calculated_rates))
+    for rate in calculated_rates:
+        self.assertEqual(rate, nbu_rate)
+
+    # All days for discount rate are DIFFERENT
+    # This code checks if calculated rates are also DIFFERENT
+    days_increment = int(DAYS_PER_YEAR / periods)
+    days = [(i + 1) * days_increment for i in range(21)]
+    calculated_rates = calculate_discount_rates(days, nbu_rate)
+    for (i, rate) in enumerate(calculated_rates):
+        checking_rates = calculated_rates[i + 1:]
+        for checking_rate in checking_rates:
+            self.assertNotEqual(rate, checking_rate)
