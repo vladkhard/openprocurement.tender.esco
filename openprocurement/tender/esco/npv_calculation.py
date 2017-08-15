@@ -19,3 +19,18 @@ def calculate_discount_rate(
 
     return float(Fraction(nbu_discount_rate) *
                  Fraction(days_for_discount_rate, days_per_year))
+
+
+def calculate_discount_rates(
+        nbu_discount_rate,
+        days_for_discount_rates,
+        days_per_year=DAYS_PER_YEAR):
+    '''Calculate discount rates from days_for_discount_rates list'''
+
+    return [
+        calculate_discount_rate(
+            nbu_discount_rate,
+            days_for_discount_rate,
+            days_per_year,
+        ) for days_for_discount_rate in days_for_discount_rates
+    ]
