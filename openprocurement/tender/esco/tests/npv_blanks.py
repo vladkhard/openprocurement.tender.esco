@@ -91,3 +91,14 @@ def discount_rates(self):
         checking_rates = calculated_rates[i + 1:]
         for checking_rate in checking_rates:
             self.assertNotEqual(rate, checking_rate)
+
+    # Predefined first and last value
+    new_nbu_rate = 12.5
+    predefined_rate1 = 4.623287671232877
+    predefined_rate2 = 7.876712328767123
+
+    days = [135] + [0] * (periods - 2) + [230]
+    calculated_rates = calculate_discount_rates(days, new_nbu_rate)
+    self.assertEqual(len(days), len(calculated_rates))
+    self.assertEqual(calculated_rates[0], predefined_rate1)
+    self.assertEqual(calculated_rates[-1], predefined_rate2)
