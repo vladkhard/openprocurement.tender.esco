@@ -12,8 +12,8 @@ def calculate_contract_duration(
 
 
 def calculate_discount_rate(
-        nbu_discount_rate,
         days_for_discount_rate,
+        nbu_discount_rate,
         days_per_year=DAYS_PER_YEAR):
     '''Calculate discount rate according to the law'''
 
@@ -29,8 +29,8 @@ def calculate_discount_rates(
 
     return [
         calculate_discount_rate(
-            nbu_discount_rate,
             days_for_discount_rate,
+            nbu_discount_rate,
             days_per_year,
         ) for days_for_discount_rate in days_for_discount_rates
     ]

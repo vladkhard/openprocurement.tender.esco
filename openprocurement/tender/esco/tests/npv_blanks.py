@@ -48,7 +48,7 @@ def discount_rate(self):
     nbu_rate = 12.5
     days = 135
     self.assertEqual(
-        calculate_discount_rate(nbu_rate, days),
+        calculate_discount_rate(days, nbu_rate),
         4.623287671232877,
     )
 
@@ -59,7 +59,7 @@ def discount_rate(self):
         nbu_rate = (i / float(n)) * 100
         days = DAYS_PER_YEAR
         self.assertEqual(
-            calculate_discount_rate(nbu_rate, days, DAYS_PER_YEAR),
+            calculate_discount_rate(days, nbu_rate, DAYS_PER_YEAR),
             nbu_rate,
         )
 
