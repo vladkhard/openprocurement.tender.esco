@@ -43,7 +43,6 @@ def contract_duration(self):
 
 
 def discount_rate(self):
-
     # Predefined value
     nbu_rate = 12.5
     days = 135
@@ -65,7 +64,6 @@ def discount_rate(self):
 
 
 def discount_rates(self):
-
     periods = 21
 
     # All days for discount rate are zeros
