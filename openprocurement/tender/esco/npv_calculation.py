@@ -46,6 +46,15 @@ def calculate_discount_rates(
     ]
 
 
+def calculate_discounted_income(coef_discount, income_customer):
+    count = 0
+    discounted_income = []
+    for i in coef_discount:
+        discounted_income.append(i*income_customer[count])
+        count += 1
+    return discounted_income
+
+  
 def calculate_days_with_cost_reduction(
         announcement_date,
         days_per_year=DAYS_PER_YEAR,
