@@ -4,6 +4,7 @@ import os
 version = '1.0'
 
 requires = [
+    'esculator',
     'setuptools',
     'openprocurement.api>=2.3',
     'openprocurement.tender.openeu',
@@ -26,7 +27,7 @@ entry_points = {
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(here, 'README.txt')) as f:
+with open(os.path.join(here, 'README.rst')) as f:
     README = f.read()
 
 setup(name='openprocurement.tender.esco',
