@@ -21,6 +21,7 @@ Contents:
    overview
    tutorial
    multiple_lots_tutorial
+   complaints
    standard/index.rst
 
 
